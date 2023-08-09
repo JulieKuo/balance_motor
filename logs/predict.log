@@ -1,0 +1,10 @@
+2023-08-07 15:52:36 INFO --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2023-08-07 15:52:36 INFO input = {'work_id': 'FC236606T1-2', 'op': 1, 'model_id': '20230807120000000', 'speed': '1000', 'l_angle_ori': '334', 'l_weight_ori': '167', 'f_angle_ori': '197', 'f_weight_ori': '81.3'}
+2023-08-07 15:52:36 INFO Load model from C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
+2023-08-07 15:52:36 INFO Generate candidate values.
+2023-08-07 15:52:36 INFO Generate candidate combinations.
+2023-08-07 15:52:37 INFO Generate features.
+2023-08-07 15:52:38 INFO Feature engineering.
+2023-08-07 15:52:39 INFO Predict.
+2023-08-07 15:52:40 INFO Find best combination.
+2023-08-07 15:52:40 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\predict\output.json
