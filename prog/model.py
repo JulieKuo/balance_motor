@@ -64,7 +64,7 @@ def calculate_score(models, X_train, X_test, y_train, y_test, scoring = "r2", cv
 
 
 
-def pred_plot(pred_trains, pred_tests, scores, target_vol, model_path, side, top_score = 3):
+def pred_plot(pred_trains, pred_tests, scores, target, model_path, side, top_score = 3):
     pred_trains_top = pred_trains[["target"] + scores.index[:top_score].to_list()]
     pred_tests_top  = pred_tests[["target"] + scores.index[:top_score].to_list()]
 
@@ -73,7 +73,7 @@ def pred_plot(pred_trains, pred_tests, scores, target_vol, model_path, side, top
     fig, ax = plt.subplots(2, 1, figsize = (20, 10))
     for i in range(2):
         ax[i].plot(data[i], alpha = 1)
-        ax[i].set(ylabel = target_vol[0], xlabel = "Sample", title = titles[i])
+        ax[i].set(ylabel = target, xlabel = "Sample", title = titles[i])
         ax[i].legend(data[i].columns, fontsize = 10)
     
     fig.savefig(f"{model_path}/{side}_pred.png")

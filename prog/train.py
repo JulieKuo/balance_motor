@@ -41,6 +41,11 @@ class Model():
     
     
     def train(self, df, test_size, shuffle, stop, model_boundary, side):
+        if side == "L":
+            target = self.target_vol[0]
+        else:
+            target = self.target_vol[1]
+
         total_scores = pd.DataFrame()
         total_models = {}
         preds = {}
@@ -55,7 +60,8 @@ class Model():
             train, test, scaler = scaling(self.features, train, test)
 
             X_train, X_test = train[self.features], test[self.features]
-            y_train, y_test = train[self.target_vol[0]], test[self.target_vol[0]]
+            y_train, y_test = train[target], test[target]
+
 
             models = modeling(X_train, y_train, random_state = num)
 
@@ -86,7 +92,7 @@ class Model():
         best_score.to_csv(os.path.join(self.model_path, f"{side}_score.csv"))
 
         pred_trains, pred_tests = preds[best_order]["train"], preds[best_order]["test"]
-        pred_plot(pred_trains, pred_tests, best_score, self.target_vol, self.model_path, side, top_score = 3)
+        pred_plot(pred_trains, pred_tests, best_score, target, self.model_path, side, top_score = 3)
 
 
         self.logging.info(f'- Save {side} model to {self.model_detail}\*.pkl')        
