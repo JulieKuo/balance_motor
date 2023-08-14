@@ -148,9 +148,9 @@ class Model():
             df_comb["總不平衡量"] = df_comb.eval("(abs(最終_L側不平衡量) + abs(最終_F側不平衡量))")
 
             # 先嚴格篩選，在寬鬆篩選
-            df_comb1 = df_comb.query("((平衡_L側配重 > 0) and (平衡_F側配重 > 0)) and ((最終_L側不平衡量 > 0) and (最終_F側不平衡量 > 0))")
+            df_comb1 = df_comb.query("((平衡_L側配重 > 0) and (平衡_F側配重 > 0)) and ((最終_L側不平衡量 >= 0.1) and (最終_F側不平衡量 >= 0.1))")
             if len(df_comb1) == 0:
-                df_comb1 = df_comb.query("(最終_L側不平衡量 > 0) and (最終_F側不平衡量 > 0)")
+                df_comb1 = df_comb.query("(最終_L側不平衡量 >= 0.1) and (最終_F側不平衡量 >= 0.1)")
             if len(df_comb1) == 0:
                 df_comb1 = df_comb.copy()
                 

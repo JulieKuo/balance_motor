@@ -40,7 +40,7 @@ class Model():
         pickle.dump(model, open(os.path.join(self.model_detail, f"{side}_model.pkl"), "wb"))
     
     
-    def train(self, df, test_size, shuffle, stop, model_boundary, side):
+    def train(self, df, stop, model_boundary, side):
         if side == "L":
             target = self.target_vol[0]
         else:
@@ -54,7 +54,7 @@ class Model():
         stop *= 60 # min -> s
         pbar = tqdm(total = stop, ncols = 50)
         while (end - start) < stop:
-            train, test = split_data(df, test_size, shuffle, random_state = num)
+            train, test, _ = split_data(df)
             train, test, outlier_boundary = deal_with_outlier(self.features, train, test)
             train, test, skew_feat, pt    = deal_with_skew(self.features, train, test)
             train, test, scaler = scaling(self.features, train, test)
@@ -83,16 +83,18 @@ class Model():
 
 
         self.logging.info(f'- Save {side} score and chart.') 
-        total_scores = total_scores.sort_values([('r2',  'test'), ('r2',  'train'), ('r2',  'cv')], ascending = False)
-        total_scores = total_scores[(total_scores[('r2',  'test')] < 0.9)] # 避免test太高，但train卻很低
+        total_scores = total_scores.sort_values([('r2',  'test'), ('mape',  'test'), ('r2',  'train'), ('mape',  'train')], ascending = [False, True, False, True])
+        total_scores1 = total_scores[(total_scores[('r2',  'train')] > total_scores[('r2',  'test')]) & (total_scores[('mape',  'train')] < total_scores[('mape',  'test')])]
+        if len(total_scores1) == 0:
+            total_scores1 = total_scores.copy()
 
-        best_order = total_scores["order"].iloc[0]
-        best_score = total_scores.iloc[[0]]
+        best_order = total_scores1["order"].iloc[0]
+        best_score = total_scores1.iloc[[0]]
         best_score = best_score.drop("order", axis = 1)
         best_score.to_csv(os.path.join(self.model_path, f"{side}_score.csv"))
 
         pred_trains, pred_tests = preds[best_order]["train"], preds[best_order]["test"]
-        pred_plot(pred_trains, pred_tests, best_score, target, self.model_path, side, top_score = 3)
+        pred_plot(pred_trains, pred_tests, best_score, target, self.model_path, side)
 
 
         self.logging.info(f'- Save {side} model to {self.model_detail}\*.pkl')        
@@ -104,7 +106,7 @@ class Model():
     
     
     
-    def run(self, shuffle = True, limit_end = 30, test_size = 0.15, stop = 2, model_boundary = 0.6):
+    def run(self, limit_end = 30, stop = 5, model_boundary = 0.6):
         try:
             self.logging.info(f"Get data from {self.data_csv}")
 
@@ -114,7 +116,6 @@ class Model():
                 raise NoDataFoundException
             
             df = df.dropna().reset_index(drop = True)
-            df = df.drop(['日期', '工號', '序號'], axis = 1)
             
 
             self.logging.info("Generate feature.")
@@ -124,15 +125,16 @@ class Model():
             self.logging.info("Split data.")
             self.target_vol = ["最終_L側不平衡量", "最終_F側不平衡量"]
             target_angle    = ["最終_L側角度", "最終_F側角度"]
-            self.features   = df.columns.drop(self.target_vol + target_angle).to_list()
+            features   = df.columns.drop(self.target_vol + target_angle).to_list()
+            self.features = features[3:]
 
             l_df = df[df[self.target_vol[0]] <= limit_end].reset_index(drop = True)
             f_df = df[df[self.target_vol[1]] <= limit_end].reset_index(drop = True)
 
 
             self.logging.info("Modeling.")
-            l_best_score = self.train(l_df, test_size, shuffle, stop, model_boundary, side = "L")
-            f_best_score = self.train(f_df, test_size, shuffle, stop, model_boundary, side = "F")
+            l_best_score = self.train(l_df, stop, model_boundary, side = "L")
+            f_best_score = self.train(f_df, stop, model_boundary, side = "F")
             l_best_score = l_best_score.iloc[0][("r2", "test")]
             f_best_score = f_best_score.iloc[0][("r2", "test")]
 
@@ -140,7 +142,7 @@ class Model():
             result = {
                 "status":     "success",
                 "model_id":   self.model_id,
-                "accuracy":   min(l_best_score, f_best_score),
+                "accuracy":   max(l_best_score, f_best_score),
                 "l_accuracy": l_best_score,
                 "f_accuracy": f_best_score,
                 }

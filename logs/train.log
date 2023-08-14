@@ -1,11 +1,11 @@
-2023-08-07 15:47:23 INFO --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-2023-08-07 15:47:23 INFO input = {'model_id': '20230807120000000'}
-2023-08-07 15:47:23 INFO Get data from C:\Users\tzuli\Documents\python\teco\data\train\train_data.csv
-2023-08-07 15:47:23 INFO Generate feature.
-2023-08-07 15:47:23 INFO Split data.
-2023-08-07 15:47:23 INFO Modeling.
-2023-08-07 15:49:23 INFO - Save L score and chart.
-2023-08-07 15:49:24 INFO - Save L model to C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
-2023-08-07 15:51:24 INFO - Save F score and chart.
-2023-08-07 15:51:24 INFO - Save F model to C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
-2023-08-07 15:51:24 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\train\output.json
+2023-08-14 12:13:08 INFO --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2023-08-14 12:13:08 INFO input = {'model_id': '20230807120000000'}
+2023-08-14 12:13:08 INFO Get data from C:\Users\tzuli\Documents\python\teco\data\train\train_data.csv
+2023-08-14 12:13:08 INFO Generate feature.
+2023-08-14 12:13:08 INFO Split data.
+2023-08-14 12:13:08 INFO Modeling.
+2023-08-14 12:18:10 INFO - Save L score and chart.
+2023-08-14 12:18:10 INFO - Save L model to C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
+2023-08-14 12:23:11 INFO - Save F score and chart.
+2023-08-14 12:23:11 INFO - Save F model to C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
+2023-08-14 12:23:11 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\train\output.json
