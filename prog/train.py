@@ -31,6 +31,7 @@ class Model():
         os.makedirs(self.model_detail, exist_ok = True)
 
 
+
     def save_model(self, side, outlier_boundary, skew_feat, pt, scaler, model):
         pickle.dump(self.features, open(os.path.join(self.model_detail, "feat_order.pkl"), "wb"))
         pickle.dump(outlier_boundary, open(os.path.join(self.model_detail, f"{side}_outlier_boundary.pkl"), "wb"))
@@ -38,6 +39,7 @@ class Model():
         pickle.dump(pt, open(os.path.join(self.model_detail, f"{side}_power_tf.pkl"), "wb"))
         pickle.dump(scaler, open(os.path.join(self.model_detail, f"{side}_scaler.pkl"), "wb"))
         pickle.dump(model, open(os.path.join(self.model_detail, f"{side}_model.pkl"), "wb"))
+    
     
     
     def train(self, df, stop, model_boundary, side):
