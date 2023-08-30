@@ -63,11 +63,13 @@ class Parser():
 
 
             # 序號轉為數字
+            df = df[~df.isna().all(axis = 1)].reset_index(drop = True)
             df["序號"] = [1 if "初始" in i else int(i.replace("第", "").replace("次", "")) for i in df["序號"]]
 
 
             # 刪除特徵
-            df = df.drop(["範例", "備註"], axis = 1)
+            drop_col = set(df.columns) & set(["Unnamed: 0_level_1", "範例", "備註"])
+            df = df.drop(drop_col, axis = 1)
 
 
             # 補充平衡角度的資料

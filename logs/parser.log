@@ -1,5 +1,5 @@
-2023-08-07 14:41:14 INFO ----------------------------------------------------------------------------------------------------
-2023-08-07 14:41:14 INFO Read data from C:\Users\tzuli\Documents\python\teco\data\upload\FC動平衡過程紀錄20230718.xlsx
-2023-08-07 14:41:14 INFO Parsing.
-2023-08-07 14:41:14 INFO Save data to C:\Users\tzuli\Documents\python\teco\data\clean\*.csv
-2023-08-07 14:41:14 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\clean\output.json
+2023-08-30 16:48:35 INFO ----------------------------------------------------------------------------------------------------
+2023-08-30 16:48:35 INFO Read data from c:\Users\tzuli\Documents\python\teco\data\upload\FC動平衡過程紀錄20230718.xlsx
+2023-08-30 16:48:35 INFO Parsing.
+2023-08-30 16:48:35 INFO Save data to c:\Users\tzuli\Documents\python\teco\data\clean\*.csv
+2023-08-30 16:48:35 INFO Save output to c:\Users\tzuli\Documents\python\teco\data\clean\output.json
