@@ -1,11 +1,12 @@
-import os, json, sqlalchemy
+import os, json, sqlalchemy, sys
 import pandas as pd
 from traceback import format_exc
 from log_config import Log
+from tools import *
 
 
 class Export():
-    def __init__(self, root):
+    def __init__(self, root, input_):
         # 取得output位置
         export_path = os.path.join(root, "data", "export")
         os.makedirs(export_path, exist_ok = True)
@@ -16,6 +17,11 @@ class Export():
         config_path = os.path.join(root, "prog", "config.json")
         with open(config_path) as f:
             self.config = json.load(f)
+        
+
+        # 資料區間
+        self.start_time = input_["start_time"]
+        self.end_time = input_["end_time"]
     
 
 
@@ -25,7 +31,7 @@ class Export():
             con_info = f'mysql+pymysql://{self.config["user"]}:{self.config["password"]}@{self.config["host"]}:{self.config["port"]}/{self.config["database"]}'
             conn = sqlalchemy.create_engine(con_info)
 
-            query = f'SELECT * FROM {self.config["table"]}'
+            query = f'SELECT * FROM {self.config["table"]} WHERE create_time >= "{self.start_time}" AND create_time <= "{self.end_time}"'
             df = pd.read_sql(query, conn)
             
 
@@ -58,6 +64,10 @@ class Export():
             # 刪除重複出現的樣本
             df = df.drop_duplicates(subset = ["work_id", "op"], keep = "last")
 
+            # 資料庫中的create_time一開始建時有缺失值，須補齊
+            df = df.sort_values(["work_id", "op"])
+            df["create_time"] = df["create_time"].fillna(method = "bfill").fillna(method = "ffill")
+
             # 轉換輸出值         
             df["create_time"] = df["create_time"].dt.date # time to date
             df["op"] = "第" + df["op"].astype(str) + "次"
@@ -70,7 +80,6 @@ class Export():
             g = df.groupby("work_id")
             for group in df_first["work_id"]:
                 df1 = g.get_group(group)
-                df1.loc[:, "create_time"] = df1.loc[:, "create_time"].fillna(method = "bfill")
                 df1.iloc[1:, :2] = None
 
                 # 新增中間欄位名
@@ -123,7 +132,11 @@ if __name__ == '__main__':
     
     logging.info("-"*100)
     # logging.info(f"root: {root}")
+
+
+    input_ = get_input(sys.argv, logging)
+    logging.info(f"input = {input_}")
     
 
-    export = Export(root)
+    export = Export(root, input_)
     export.data_excel()
