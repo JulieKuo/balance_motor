@@ -77,7 +77,7 @@ class Model():
                 if angle > 360:
                     l_angle_change.append(angle - 360)
                 elif angle < 0:
-                    l_angle_change.append(360 - angle)
+                    l_angle_change.append(360 + angle)
                 else:
                     l_angle_change.append(angle)
 
@@ -86,7 +86,7 @@ class Model():
                 if angle > 360:
                     f_angle_change.append(angle - 360)
                 elif angle < 0:
-                    f_angle_change.append(360 - angle)
+                    f_angle_change.append(360 + angle)
                 else:
                     f_angle_change.append(angle)
             
