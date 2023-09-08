@@ -1,5 +1,6 @@
-2023-08-30 16:48:35 INFO ----------------------------------------------------------------------------------------------------
-2023-08-30 16:48:35 INFO Read data from c:\Users\tzuli\Documents\python\teco\data\upload\FC動平衡過程紀錄20230718.xlsx
-2023-08-30 16:48:35 INFO Parsing.
-2023-08-30 16:48:35 INFO Save data to c:\Users\tzuli\Documents\python\teco\data\clean\*.csv
-2023-08-30 16:48:35 INFO Save output to c:\Users\tzuli\Documents\python\teco\data\clean\output.json
+2023-09-05 17:03:10 INFO ----------------------------------------------------------------------------------------------------
+2023-09-05 17:03:10 INFO Read data from c:\Users\tzuli\Documents\python\teco\data\upload\total_data.xlsx
+2023-09-05 17:03:10 INFO Parsing.
+2023-09-05 17:03:10 INFO Save data to c:\Users\tzuli\Documents\python\teco\data\clean\*.csv
+2023-09-05 17:03:10 INFO Save data to c:\Users\tzuli\Documents\python\teco\data\train\train_data.csv
+2023-09-05 17:03:10 INFO Save output to c:\Users\tzuli\Documents\python\teco\data\clean\output.json

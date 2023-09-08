@@ -182,4 +182,4 @@ if __name__ == '__main__':
     
 
     parser = Parser(root)
-    parser.data_clean(local = False)
+    parser.data_clean(local = True)

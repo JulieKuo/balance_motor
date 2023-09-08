@@ -1,6 +1,6 @@
-2023-08-31 14:44:30 INFO ----------------------------------------------------------------------------------------------------
-2023-08-31 14:44:30 INFO input = {'start_time': '2023-07-01 00:00:00', 'end_time': '2023-08-29 23:59:59'}
-2023-08-31 14:44:30 INFO Read data from database.
-2023-08-31 14:44:30 INFO Data processing.
-2023-08-31 14:44:30 INFO Save data to C:\Users\tzuli\Documents\python\teco\data\export\data.xlsx
-2023-08-31 14:44:31 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\export\output.json
+2023-09-05 16:56:51 INFO ----------------------------------------------------------------------------------------------------
+2023-09-05 16:56:51 INFO input = {'start_time': '2023-07-01 00:00:00', 'end_time': '2023-09-05 23:59:59'}
+2023-09-05 16:56:51 INFO Read data from database.
+2023-09-05 16:56:51 INFO Data processing.
+2023-09-05 16:56:51 INFO Save data to C:\Users\tzuli\Documents\python\teco\data\export\data.xlsx
+2023-09-05 16:56:52 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\export\output.json

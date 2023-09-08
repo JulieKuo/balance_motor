@@ -52,6 +52,82 @@ def generate_feature(df):
 
 
 
+def generate_weight(weight_ori, gap, count, weight_limit):
+    end = round((count + 1) * gap) # 候選重量的結束範圍
+    weight_ori = min(weight_ori, weight_limit) # 重量不可大於上限
+    
+    # 產生候選重量
+    weight_change = []
+    for i in range(0, end, gap):
+        weight_change.extend([max(0, weight_ori + i), max(0, weight_ori - i)])
+
+    # 刪除相同的值
+    weight_change = sorted(list(set(weight_change)))
+    weight_change = np.array(weight_change)
+
+    # 重量不可大於上限
+    weight_change = weight_change[weight_change <= weight_limit]
+
+    return weight_change
+
+
+
+def generate_angle(angle_ori, material, aluminum_division, copper_division, max_k):
+    # 產生候選角度
+    if material == "aluminum":
+        angle_init = np.linspace(0, 360, (aluminum_division + 1))
+        k = min(round(90 / (360 / aluminum_division)), max_k) # 候選組合只可在同象限內
+    else:    
+        angle_init = np.linspace(0, 360, (copper_division + 1))
+        k = min(round(90 / (360 / copper_division)), max_k) # 候選組合只可在同象限內
+
+    closest_index = np.argsort(np.abs(angle_init - angle_ori))[:k] # 與angle_ori最接近的K個角度
+    angle_change0 = angle_init[closest_index]
+
+
+    # 調整候選較度
+    angle_change = []
+    for angle in angle_change0:
+        if angle > 360:
+            angle_change.append(angle - 360)
+        elif angle < 0:
+            angle_change.append(360 + angle)
+        else:
+            angle_change.append(angle)
+    
+    # 排序候選角度
+    angle_change = sorted(angle_change)
+
+    return angle_change, angle_init
+
+
+
+def remove_combination(df_db, angle_init, weight_limit, df_comb, side):
+    # db中的實際填補角度以最接近的欲填補角度替代
+    for i in range(len(df_db)):
+        closest_index = np.argmin(np.abs(angle_init - df_db.loc[i, f"{side.lower()}_angle_act"]))
+        df_db.loc[i, f"{side.lower()}_angle_act"] = angle_init[closest_index]
+
+    # 計算已填補角度的剩餘可填補重量
+    cumulative_weight = df_db.groupby(f"{side.lower()}_angle_act").agg({f"{side.lower()}_weight_act": sum})
+    cumulative_weight = cumulative_weight.to_dict()[f"{side.lower()}_weight_act"]
+
+    # 刪除超出可填補重量的候選組合
+    for key, value in cumulative_weight.items():
+        if value > 0:
+            remain_min = 0
+            remain_max = weight_limit - value
+        else:
+            remain_min = (- weight_limit) - value
+            remain_max = 0
+
+        drop_index = df_comb.query(f"平衡_{side}側角度 == {key} and (平衡_{side}側配重 > {remain_min}) and (平衡_{side}側配重 < {remain_max})").index
+        df_comb = df_comb.drop(drop_index).reset_index(drop = True)
+    
+    return df_comb
+
+
+
 def split_data(df):
     # 切分
     test_work_id = random.choices(df["工號"].unique(), k = round(df["工號"].nunique() * 0.2))
