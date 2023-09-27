@@ -68,7 +68,7 @@ class Parser():
 
 
             # 刪除特徵
-            drop_col = set(df.columns) & set(["Unnamed: 0_level_1", "範例", "備註"])
+            drop_col = set(df.columns) & set(["Unnamed: 0_level_1"])
             df = df.drop(drop_col, axis = 1)
 
 
@@ -123,6 +123,29 @@ class Parser():
             check_num_col = ['平衡轉速', '初始_L側角度', '初始_L側不平衡量', '初始_F側角度', '初始_F側不平衡量', '平衡_L側角度', '平衡_F側角度']
             df.loc[:, check_num_col] = df.loc[:, check_num_col].apply(pd.to_numeric, errors='coerce')
             df = df[~df[check_num_col].isnull().any(axis = 1)]
+
+
+            # 獲取材料為鋁的資料
+            aluminum_flag = df["範例"].fillna("None").str.contains("鋁")
+            aluminum_work_id = df["工號"][aluminum_flag]
+            df = df.query("工號 in @aluminum_work_id").reset_index(drop = True)
+
+
+            # 刪除剪枝和不補償後的資料
+            df[["範例", "備註"]] = df[["範例", "備註"]].fillna("None")
+            df1 = pd.DataFrame()
+            g = df.groupby("工號")
+            for group in df["工號"].unique():
+                df_group = g.get_group(group).reset_index(drop = True)
+                stop_flag1 = df_group["範例"].str.contains("鉚合") # 剪枝tag
+                stop_flag2 = df_group["備註"].str.contains("不補償") # 不補償tag
+                stop_flag = (stop_flag1 | stop_flag2)
+                if sum(stop_flag) != 0:        
+                    stop_index = df_group[stop_flag].index[0]
+                    df_group = df_group.iloc[:stop_index] # 只保留剪枝和不補償前的資料
+                df1 = pd.concat([df1, df_group], ignore_index = True)
+                
+            df = df1.drop(["範例", "備註"], axis = 1)
 
 
             logging.info(f'Save data to {self.clean_path}\*.csv')

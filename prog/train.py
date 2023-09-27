@@ -1,10 +1,9 @@
-import os, json, sys, pickle, time, warnings
+import os, json, sys, pickle, warnings
 import pandas as pd
 from traceback import format_exc
 from log_config import Log
 from tools import *
 from model import *
-from tqdm import tqdm
 
 warnings.filterwarnings("ignore")
 
@@ -32,119 +31,64 @@ class Model():
 
 
 
-    def save_model(self, side, outlier_boundary, skew_feat, pt, scaler, model):
-        pickle.dump(self.features, open(os.path.join(self.model_detail, "feat_order.pkl"), "wb"))
-        pickle.dump(outlier_boundary, open(os.path.join(self.model_detail, f"{side}_outlier_boundary.pkl"), "wb"))
-        pickle.dump(skew_feat, open(os.path.join(self.model_detail, f"{side}_skew_feat.pkl"), "wb"))
-        pickle.dump(pt, open(os.path.join(self.model_detail, f"{side}_power_tf.pkl"), "wb"))
-        pickle.dump(scaler, open(os.path.join(self.model_detail, f"{side}_scaler.pkl"), "wb"))
+    def save_model(self, side, model):
         pickle.dump(model, open(os.path.join(self.model_detail, f"{side}_model.pkl"), "wb"))
     
     
     
-    def train(self, df, stop, model_boundary, side):
-        if side == "L":
-            target = self.target_vol[0]
-        else:
-            target = self.target_vol[1]
+    def train(self, df, aluminum_division, random_state, side):
+        df = df[[f"初始_{side}側角度", f"初始_{side}側不平衡量"]]
 
-        total_scores = pd.DataFrame()
-        total_models = {}
-        preds = {}
-        num = 0
-        start, end = time.time(), time.time()
-        stop *= 60 # min -> s
-        pbar = tqdm(total = stop, ncols = 50)
-        while (end - start) < stop:
-            train, test, _ = split_data(df)
-            train, test, outlier_boundary = deal_with_outlier(self.features, train, test)
-            train, test, skew_feat, pt    = deal_with_skew(self.features, train, test)
-            train, test, scaler = scaling(self.features, train, test)
+        self.logging.info("- Feature engineering.")
+        angle_init = np.linspace(0, 360, (aluminum_division + 1)).astype(int)
+        df = calculate_angle_proportion(df, angle_init, aluminum_division, side)        
+        df = calculate_weight(df, side)
+        df1 = encoding(df, side)
+        X_train, X_test, y_train, y_test = split_data(df1, random_state)
 
-            X_train, X_test = train[self.features], test[self.features]
-            y_train, y_test = train[target], test[target]
+        self.logging.info("- Modeling.")
+        models = modeling(X_train, y_train, random_state)
+        scores, pred_trains, pred_tests = calculate_score(models, X_train, X_test, y_train, y_test, scoring = "weighted", cv_flag = 1)
+        scores = scores.sort_values(("f1", "test"), ascending = False)
+        best_model = scores.index[0]
+        model = models[best_model]
+        best_score = scores.loc[best_model, ("f1", "test")]
 
+        self.logging.info(f'- Save {side} score and chart.')
+        scores.to_csv(os.path.join(self.model_path, f"{side}_score.csv"))
+        pred_plot(y_train, y_test, pred_trains, pred_tests, scores.loc[[best_model]], self.model_path, side)
 
-            models = modeling(X_train, y_train, random_state = num)
-
-            scores0, pred_trains, pred_tests = calculate_score(models, X_train, X_test, y_train, y_test, scoring = "r2", cv_flag = 1, cv_scoring = "r2", random_state = num)
-            scores = scores0.sort_values(("r2", "test"), ascending = False).iloc[[0]]
-
-            if (scores["r2"] > model_boundary).values.all():
-                preds[num] = {"train": pred_trains, "test": pred_tests}
-                total_models[num] = models[scores.index[0]]
-                scores["order"] = num
-                total_scores = pd.concat([total_scores, scores])
-            
-            num += 1
-            mid = end
-            end = time.time()
-            pbar.update(round(end - mid, 4))
-            
-        pbar.close()
-
-
-        self.logging.info(f'- Save {side} score and chart.') 
-        total_scores = total_scores.sort_values([('r2',  'test'), ('mape',  'test'), ('r2',  'train'), ('mape',  'train')], ascending = [False, True, False, True])
-        total_scores1 = total_scores[(total_scores[('r2',  'train')] > total_scores[('r2',  'test')]) & (total_scores[('mape',  'train')] < total_scores[('mape',  'test')])]
-        if len(total_scores1) == 0:
-            total_scores1 = total_scores.copy()
-
-        best_order = total_scores1["order"].iloc[0]
-        best_score = total_scores1.iloc[[0]]
-        best_score = best_score.drop("order", axis = 1)
-        best_score.to_csv(os.path.join(self.model_path, f"{side}_score.csv"))
-
-        pred_trains, pred_tests = preds[best_order]["train"], preds[best_order]["test"]
-        pred_plot(pred_trains, pred_tests, best_score, target, self.model_path, side)
-
-
-        self.logging.info(f'- Save {side} model to {self.model_detail}\*.pkl')        
-        model = total_models[best_order]
-        self.save_model(side, outlier_boundary, skew_feat, pt, scaler, model)
+        self.logging.info(f'- Save {side} model to {self.model_detail}\*.pkl')
+        self.save_model(side, model)
 
 
         return best_score
     
     
     
-    def run(self, limit_end = 30, stop = 5, model_boundary = 0.6):
+    def run(self, aluminum_division = 12, random_state = 99):
         try:
             self.logging.info(f"Get data from {self.data_csv}")
 
-            df = pd.read_csv(self.data_csv)
+            df_raw = pd.read_csv(self.data_csv)
 
-            if df.empty:
+            if df_raw.empty:
                 raise NoDataFoundException
+                    
+            # df_all = df_raw.groupby("工號").first().reset_index(drop = True)
+            df_all = df_raw.query("(初始_L側不平衡量 >= 4) & (初始_F側不平衡量 >= 4)").reset_index(drop = True)
+
+            self.logging.info("Train L side data.")
+            l_best_score = self.train(df_all, aluminum_division, random_state, side = "L")
             
-            df = df.dropna().reset_index(drop = True)
-            
-
-            self.logging.info("Generate feature.")
-            df = generate_feature(df)
-
-
-            self.logging.info("Split data.")
-            self.target_vol = ["最終_L側不平衡量", "最終_F側不平衡量"]
-            target_angle    = ["最終_L側角度", "最終_F側角度"]
-            features   = df.columns.drop(self.target_vol + target_angle).to_list()
-            self.features = features[3:]
-
-            l_df = df[df[self.target_vol[0]] <= limit_end].reset_index(drop = True)
-            f_df = df[df[self.target_vol[1]] <= limit_end].reset_index(drop = True)
-
-
-            self.logging.info("Modeling.")
-            l_best_score = self.train(l_df, stop, model_boundary, side = "L")
-            f_best_score = self.train(f_df, stop, model_boundary, side = "F")
-            l_best_score = l_best_score.iloc[0][("r2", "test")]
-            f_best_score = f_best_score.iloc[0][("r2", "test")]
+            self.logging.info("Train F side data.")
+            f_best_score = self.train(df_all, aluminum_division, random_state, side = "F")
 
 
             result = {
                 "status":     "success",
                 "model_id":   self.model_id,
-                "accuracy":   max(l_best_score, f_best_score),
+                "accuracy":   min(l_best_score, f_best_score),
                 "l_accuracy": l_best_score,
                 "f_accuracy": f_best_score,
                 }
