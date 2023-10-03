@@ -41,7 +41,7 @@ class Model():
 
         self.logging.info("- Feature engineering.")
         angle_init = np.linspace(0, 360, (aluminum_division + 1)).astype(int)
-        df = calculate_angle_proportion(df, angle_init, aluminum_division, side)        
+        df = calculate_angle_proportion(df, angle_init, aluminum_division, side)   
         df = calculate_weight(df, side)
         df1 = encoding(df, side)
         X_train, X_test, y_train, y_test = split_data(df1, random_state)

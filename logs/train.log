@@ -1,14 +1,14 @@
-2023-09-25 17:35:12 INFO --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-2023-09-25 17:35:12 INFO input = {'model_id': '20230807120000000'}
-2023-09-25 17:35:12 INFO Get data from C:\Users\tzuli\Documents\python\teco\data\train\train_data.csv
-2023-09-25 17:35:12 INFO Train L side data.
-2023-09-25 17:35:12 INFO - Feature engineering.
-2023-09-25 17:35:14 INFO - Modeling.
-2023-09-25 17:35:14 INFO - Save L score and chart.
-2023-09-25 17:35:15 INFO - Save L model to C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
-2023-09-25 17:35:15 INFO Train F side data.
-2023-09-25 17:35:15 INFO - Feature engineering.
-2023-09-25 17:35:16 INFO - Modeling.
-2023-09-25 17:35:17 INFO - Save F score and chart.
-2023-09-25 17:35:17 INFO - Save F model to C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
-2023-09-25 17:35:17 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\train\output.json
+2023-10-02 12:24:24 INFO --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2023-10-02 12:24:24 INFO input = {'model_id': '20230807120000000'}
+2023-10-02 12:24:24 INFO Get data from C:\Users\tzuli\Documents\python\teco\data\train\train_data.csv
+2023-10-02 12:24:24 INFO Train L side data.
+2023-10-02 12:24:24 INFO - Feature engineering.
+2023-10-02 12:24:26 INFO - Modeling.
+2023-10-02 12:24:26 INFO - Save L score and chart.
+2023-10-02 12:24:27 INFO - Save L model to C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
+2023-10-02 12:24:27 INFO Train F side data.
+2023-10-02 12:24:27 INFO - Feature engineering.
+2023-10-02 12:24:28 INFO - Modeling.
+2023-10-02 12:24:29 INFO - Save F score and chart.
+2023-10-02 12:24:29 INFO - Save F model to C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
+2023-10-02 12:24:29 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\train\output.json
