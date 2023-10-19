@@ -31,7 +31,7 @@ class Export():
             con_info = f'mysql+pymysql://{self.config["user"]}:{self.config["password"]}@{self.config["host"]}:{self.config["port"]}/{self.config["database"]}'
             conn = sqlalchemy.create_engine(con_info)
 
-            query = f'SELECT * FROM {self.config["table"]} WHERE create_time >= "{self.start_time}" AND create_time <= "{self.end_time}"'
+            query = f'SELECT * FROM {self.config["table"]} WHERE  (modify_by != "admin") AND ((create_time >= "{self.start_time}") AND (create_time <= "{self.end_time}"))'
             df = pd.read_sql(query, conn)
             
 

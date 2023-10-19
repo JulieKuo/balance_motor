@@ -1,6 +1,6 @@
-2023-09-20 09:46:48 INFO ----------------------------------------------------------------------------------------------------
-2023-09-20 09:46:48 INFO Read data from c:\Users\tzuli\Documents\python\teco\data\upload\total_data.xlsx
-2023-09-20 09:46:49 INFO Parsing.
-2023-09-20 09:46:49 INFO Save data to c:\Users\tzuli\Documents\python\teco\data\clean\*.csv
-2023-09-20 09:46:49 INFO Save data to c:\Users\tzuli\Documents\python\teco\data\train\train_data.csv
-2023-09-20 09:46:49 INFO Save output to c:\Users\tzuli\Documents\python\teco\data\clean\output.json
+----------------------------------------------------------------------------------------------------
+2023-10-19 10:45:47 INFO Read data from c:\Users\tzuli\Documents\python\teco\data\upload\total_data.xlsx
+2023-10-19 10:45:47 INFO Parsing.
+2023-10-19 10:45:47 INFO Save data to c:\Users\tzuli\Documents\python\teco\data\clean\*.csv
+2023-10-19 10:45:47 INFO Save data to c:\Users\tzuli\Documents\python\teco\data\train\train_data.csv
+2023-10-19 10:45:47 INFO Save output to c:\Users\tzuli\Documents\python\teco\data\clean\output.json

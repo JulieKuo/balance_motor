@@ -106,6 +106,14 @@ class Parser():
             reach_dict = {value: key for key, value in reach_dict.items()}
 
 
+            # 不使用加扇後的資料
+            df[["範例", "備註"]] = df[["範例", "備註"]].fillna("None")
+            stop_df = df[df["範例"].str.contains("扇")]["工號"]
+            stop_dict = stop_df.drop_duplicates(keep = "first").to_dict()
+            for index, work_id in stop_dict.items():
+                reach_dict[work_id] = min(reach_dict[work_id], index)
+
+
             # 獲取初始數據的index
             init_index = df.query("序號 == 1").index
             init_dict = df.loc[init_index, "工號"].to_dict()
@@ -121,18 +129,17 @@ class Parser():
 
             # 刪除連續變數中不為數值的資料
             check_num_col = ['平衡轉速', '初始_L側角度', '初始_L側不平衡量', '初始_F側角度', '初始_F側不平衡量', '平衡_L側角度', '平衡_F側角度']
-            df.loc[:, check_num_col] = df.loc[:, check_num_col].apply(pd.to_numeric, errors='coerce')
+            df.loc[:, check_num_col] = df.loc[:, check_num_col].apply(pd.to_numeric, errors = 'coerce')
             df = df[~df[check_num_col].isnull().any(axis = 1)]
 
 
             # 獲取材料為鋁的資料
-            aluminum_flag = df["範例"].fillna("None").str.contains("鋁")
+            aluminum_flag = df["範例"].str.contains("鋁")
             aluminum_work_id = df["工號"][aluminum_flag]
             df = df.query("工號 in @aluminum_work_id").reset_index(drop = True)
 
 
             # 刪除剪枝和不補償後的資料
-            df[["範例", "備註"]] = df[["範例", "備註"]].fillna("None")
             df1 = pd.DataFrame()
             g = df.groupby("工號")
             for group in df["工號"].unique():

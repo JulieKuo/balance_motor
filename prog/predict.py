@@ -52,12 +52,18 @@ class Model():
         return model
     
     
-    def predict(self, aluminum_division, side, angle_ori, weight_ori):
+    def predict(self, aluminum_division, side, angle_ori, weight_ori, weight_limit, l_extra = 6.4, f_extra = 8):
         self.logging.info(f'- Load model from {self.model_detail}\*.pkl')
         model = self.load_model(side)
 
         self.logging.info("- Feature engineering.")
         df = pd.DataFrame([[angle_ori, weight_ori]], columns = [f"初始_{side}側角度", f"初始_{side}側不平衡量"])
+
+        # 超過60補上特定值
+        extra_amount = l_extra if side == "L" else f_extra
+        if df.loc[0, f"初始_{side}側不平衡量"] > weight_limit:
+            df.loc[0, f"初始_{side}側不平衡量"] += extra_amount
+
         angle_init = np.linspace(0, 360, (aluminum_division + 1)).astype(int)
         df = calculate_angle_proportion(df, angle_init, aluminum_division, side)
         df = calculate_weight(df, side)
@@ -74,11 +80,11 @@ class Model():
     def run(self, aluminum_division = 12, weight_limit = 56):
         try:
             self.logging.info("Predict L side data.")
-            y_pred_l, df_l = self.predict(aluminum_division, side = "L", angle_ori = self.l_angle_ori, weight_ori = self.l_weight_ori)
+            y_pred_l, df_l = self.predict(aluminum_division, side = "L", angle_ori = self.l_angle_ori, weight_ori = self.l_weight_ori, weight_limit = weight_limit)
             
 
             self.logging.info("Predict F side data.")
-            y_pred_f, df_f = self.predict(aluminum_division, side = "F", angle_ori = self.f_angle_ori, weight_ori = self.f_weight_ori)
+            y_pred_f, df_f = self.predict(aluminum_division, side = "F", angle_ori = self.f_angle_ori, weight_ori = self.f_weight_ori, weight_limit = weight_limit)
 
 
             self.logging.info("Create result.")
