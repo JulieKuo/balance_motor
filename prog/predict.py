@@ -10,6 +10,16 @@ class Model():
     def __init__(self, root, input_, logging):
         self.logging = logging
 
+        
+        # 角度調整選項
+        self.adjustments = {
+            1: -15, 
+            2: -7.5,
+            3: 0, 
+            4: 7.5, 
+            5: 15
+        }
+
 
         # 取得input參數
         self.get_input(input_)
@@ -29,6 +39,18 @@ class Model():
         config_path = os.path.join(root, "prog", "config.json")
         with open(config_path) as f:
             self.config = json.load(f)
+    
+
+
+    def adjust_angle(self, angle, adjustment):
+        angle += adjustment
+        if angle < 0:
+            angle += 360
+
+        elif angle >= 360:
+            angle -= 360
+
+        return round(angle)
 
 
 
@@ -37,9 +59,10 @@ class Model():
         self.op           = input_["op"]
         self.model_id     = input_["model_id"]
         self.speed        = int(input_["speed"])
-        self.l_angle_ori  = int(input_["l_angle_ori"])
+        self.adjust       = int(input_["adjust"])
+        self.l_angle_ori  = self.adjust_angle(float(input_["l_angle_ori"]), self.adjustments[self.adjust]) # 原點角度調整
         self.l_weight_ori = float(input_["l_weight_ori"])
-        self.f_angle_ori  = int(input_["f_angle_ori"])
+        self.f_angle_ori  = self.adjust_angle(float(input_["f_angle_ori"]), self.adjustments[self.adjust]) # 原點角度調整
         self.f_weight_ori = float(input_["f_weight_ori"])
         self.material     = input_["material"]
 
@@ -47,7 +70,6 @@ class Model():
 
     def load_model(self, side):
         model = pickle.load(open(os.path.join(self.model_detail, f"{side}_model.pkl"), "rb"))
-
 
         return model
     
