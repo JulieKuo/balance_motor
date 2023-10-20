@@ -162,7 +162,6 @@ class Model():
                 "predict":  predicts,
                 "best":     best
             }
-            #
 
 
         except:
