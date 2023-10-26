@@ -1,12 +1,12 @@
-2023-10-20 09:44:10 INFO --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-2023-10-20 09:44:10 INFO input = {'work_id': 'julietest', 'op': 1, 'model_id': '20230807120000000', 'speed': '590', 'l_angle_ori': '4', 'l_weight_ori': '79', 'f_angle_ori': '45', 'f_weight_ori': '258', 'material': 'aluminum', 'adjust': '1'}
-2023-10-20 09:44:10 INFO Predict L side data.
-2023-10-20 09:44:10 INFO - Load model from C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
-2023-10-20 09:44:10 INFO - Feature engineering.
-2023-10-20 09:44:10 INFO - Predicting.
-2023-10-20 09:44:10 INFO Predict F side data.
-2023-10-20 09:44:10 INFO - Load model from C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
-2023-10-20 09:44:10 INFO - Feature engineering.
-2023-10-20 09:44:10 INFO - Predicting.
-2023-10-20 09:44:10 INFO Create result.
-2023-10-20 09:44:10 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\predict\output.json
+2023-10-26 15:32:26 INFO --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2023-10-26 15:32:26 INFO input = {'work_id': 'julietest', 'op': 1, 'model_id': '20230807120000000', 'speed': '590', 'adjust': '4', 'l_angle_ori': '8', 'l_weight_ori': '79', 'f_angle_ori': '22', 'f_weight_ori': '155', 'material': 'aluminum'}
+2023-10-26 15:32:26 INFO Predict L side data.
+2023-10-26 15:32:26 INFO - Load model from C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
+2023-10-26 15:32:26 INFO - Feature engineering.
+2023-10-26 15:32:26 INFO - Predicting.
+2023-10-26 15:32:26 INFO Predict F side data.
+2023-10-26 15:32:26 INFO - Load model from C:\Users\tzuli\Documents\python\teco\data\train\20230807120000000\model\*.pkl
+2023-10-26 15:32:26 INFO - Feature engineering.
+2023-10-26 15:32:26 INFO - Predicting.
+2023-10-26 15:32:26 INFO Create result.
+2023-10-26 15:32:26 INFO Save output to C:\Users\tzuli\Documents\python\teco\data\predict\output.json

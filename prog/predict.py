@@ -60,9 +60,13 @@ class Model():
         self.model_id     = input_["model_id"]
         self.speed        = int(input_["speed"])
         self.adjust       = int(input_["adjust"])
-        self.l_angle_ori  = self.adjust_angle(float(input_["l_angle_ori"]), self.adjustments[self.adjust]) # 原點角度調整
+        self.l_angle_ori = int(input_["l_angle_ori"])
+        self.l_angle_ori1  = self.adjust_angle(self.l_angle_ori, self.adjustments[self.adjust]) # 原點角度調整
+        print(f"l: {self.l_angle_ori} -> {self.l_angle_ori1}")
         self.l_weight_ori = float(input_["l_weight_ori"])
-        self.f_angle_ori  = self.adjust_angle(float(input_["f_angle_ori"]), self.adjustments[self.adjust]) # 原點角度調整
+        self.f_angle_ori = int(input_["f_angle_ori"])
+        self.f_angle_ori1  = self.adjust_angle(self.f_angle_ori, self.adjustments[self.adjust]) # 原點角度調整
+        print(f"f: {self.f_angle_ori} -> {self.f_angle_ori1}")
         self.f_weight_ori = float(input_["f_weight_ori"])
         self.material     = input_["material"]
 
@@ -102,11 +106,11 @@ class Model():
     def run(self, aluminum_division = 12, weight_limit = 56):
         try:
             self.logging.info("Predict L side data.")
-            y_pred_l, df_l = self.predict(aluminum_division, side = "L", angle_ori = self.l_angle_ori, weight_ori = self.l_weight_ori, weight_limit = weight_limit)
+            y_pred_l, df_l = self.predict(aluminum_division, side = "L", angle_ori = self.l_angle_ori1, weight_ori = self.l_weight_ori, weight_limit = weight_limit)
             
 
             self.logging.info("Predict F side data.")
-            y_pred_f, df_f = self.predict(aluminum_division, side = "F", angle_ori = self.f_angle_ori, weight_ori = self.f_weight_ori, weight_limit = weight_limit)
+            y_pred_f, df_f = self.predict(aluminum_division, side = "F", angle_ori = self.f_angle_ori1, weight_ori = self.f_weight_ori, weight_limit = weight_limit)
 
 
             self.logging.info("Create result.")
