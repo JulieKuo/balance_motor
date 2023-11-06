@@ -2,7 +2,7 @@ import os, sys, json, pickle
 import pandas as pd
 from traceback import format_exc
 from log_config import Log
-from tools import *
+from tool import *
 
 
 
@@ -124,13 +124,13 @@ class Model():
             }
 
             predicts = {}
-            for key, value in proportion.items():
-                l_weight_pred = [str(round((l_ans[f"{value[0]}_full"] * weight_limit) + l_ans[value[0]]))]
-                f_weight_pred = [str(round((f_ans[f"{value[0]}_full"] * weight_limit) + f_ans[value[0]]))]
+            for key, prop in proportion.items():
+                l_weight_pred = [str(round((l_ans[f"{prop[0]}_full"] * weight_limit) + (l_ans[prop[0]] * l_ans[f"{prop[0]}_amt"])))]
+                f_weight_pred = [str(round((f_ans[f"{prop[0]}_full"] * weight_limit) + (f_ans[prop[0]] * f_ans[f"{prop[0]}_amt"])))]
 
-                if value != ["10"]: # "1:0"只有一個解
-                    l_weight_pred += [str(round((l_ans[f"{value[1]}_full"] * weight_limit) + l_ans[value[1]]))]
-                    f_weight_pred += [str(round((f_ans[f"{value[1]}_full"] * weight_limit) + f_ans[value[1]]))]
+                if prop != ["10"]:
+                    l_weight_pred += [str(round((l_ans[f"{prop[1]}_full"] * weight_limit) + (l_ans[prop[1]] * l_ans[f"{prop[1]}_amt"])))]
+                    f_weight_pred += [str(round((f_ans[f"{prop[1]}_full"] * weight_limit) + (f_ans[prop[1]] * f_ans[f"{prop[1]}_amt"])))]
 
                 # 初始化該比例下的predict
                 predict = {
@@ -143,10 +143,17 @@ class Model():
                 }
 
                 # 填入組合
-                fill_solution(value, l_ans, predict, l_weight_pred, weight_limit, side = "l")
-                fill_solution(value, f_ans, predict, f_weight_pred, weight_limit, side = "f")
+                fill_solution(prop, l_ans, predict, l_weight_pred, weight_limit, side = "l")
+                fill_solution(prop, f_ans, predict, f_weight_pred, weight_limit, side = "f")
 
                 predicts[key] = predict
+
+
+            # 確認37分的方向
+            if l_ans["prop_37"] == "73":
+                predicts["3:7"]["l_weight_pred"] = predicts["3:7"]["l_weight_pred"][::-1]
+            elif f_ans["prop_37"] == "73":
+                predicts["3:7"]["f_weight_pred"] = predicts["3:7"]["f_weight_pred"][::-1]
 
 
             # 最佳建議值

@@ -10,7 +10,7 @@ plt.rcParams['font.sans-serif'] = ['Taipei Sans TC Beta']
 
 def modeling(X_train, y_train, random_state = 99):
     models = {        
-        "Bayes (Gaussian)": GaussianNB(),
+        # "Bayes (Gaussian)": GaussianNB(),
         "Random Forest": RandomForestClassifier(random_state = random_state),
     }
 
