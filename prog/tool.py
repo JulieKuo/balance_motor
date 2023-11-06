@@ -200,3 +200,41 @@ def fill_solution(prop, ans, predict, weight_pred, weight_limit, side, comb_50 =
             }
             
     return predict
+
+
+
+def chart_comb(best, predicts, side = "l"):
+    weight0 = str(predicts[best][f"{side}_weight_pred"][0])
+    comb0 = predicts[best][f"{side}_comb"][weight0]
+
+    if best != "1:0":
+        weight1 = str(predicts[best][f"{side}_weight_pred"][1])
+        comb1 = predicts[best][f"{side}_comb"][weight1]
+
+        left = []
+        for key, vlaue in comb0.items():
+            left.extend([key] * int(vlaue["count"]))
+
+        right = []
+        for key, vlaue in comb1.items():
+            right.extend([key] * int(vlaue["count"]))
+
+        left = sorted(left, reverse = False)
+        right = sorted(right, reverse = True)
+
+    else:
+        comb0_sort = sorted(comb0, reverse = False)
+
+        left = []
+        right = []
+        for comb in comb0_sort:
+            count = int(comb0[comb]["count"])
+            while count >= 2:
+                left.append(comb)
+                right.insert(0, comb)
+                count -= 2
+
+            if count != 0:
+                left.append(comb)
+
+    return left, right

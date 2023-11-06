@@ -162,6 +162,24 @@ class Model():
                 "l_side": y_map[y_pred_l],
                 "f_side": y_map[y_pred_f]
             }
+
+
+            # 畫圖時的comb順序
+            l_best = best["l_side"]
+            f_best = best["f_side"]
+
+            l_left, l_right = chart_comb(l_best, predicts, side = "l")
+            f_left, f_right = chart_comb(f_best, predicts, side = "f")
+            chart = {
+                "l_chart": {
+                    "left": l_left,
+                    "right": l_right
+                },
+                "f_chart": {
+                    "left": f_left,
+                    "right": f_right
+                },
+            }
             
 
 
@@ -171,7 +189,8 @@ class Model():
                 "op":       self.op,
                 "model_id": self.model_id,
                 "predict":  predicts,
-                "best":     best
+                "best":     best,
+                "chart":    chart
             }
 
 
