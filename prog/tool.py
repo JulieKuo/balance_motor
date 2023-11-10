@@ -219,16 +219,21 @@ def chart_comb(best, predicts, side = "l"):
         for key, vlaue in comb1.items():
             right.extend([key] * int(vlaue["count"]))
 
-        left = sorted(left, reverse = False)
+        left  = [int(i) for i in left]
+        right = [int(i) for i in right]
+        left  = sorted(left, reverse = False)
         right = sorted(right, reverse = True)
+        left  = [str(i) for i in left]
+        right = [str(i) for i in right]
 
     else:
-        comb0_sort = sorted(comb0, reverse = False)
+        comb0_keys = [int(i) for i in comb0.keys()]
+        comb0_sort = sorted(comb0_keys, reverse = False)
 
         left = []
         right = []
         for comb in comb0_sort:
-            count = int(comb0[comb]["count"])
+            count = int(comb0[str(comb)]["count"])
             while count >= 2:
                 left.append(comb)
                 right.insert(0, comb)
