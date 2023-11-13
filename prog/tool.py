@@ -228,7 +228,7 @@ def chart_comb(best, predicts, side = "l"):
 
     else:
         comb0_keys = [int(i) for i in comb0.keys()]
-        comb0_sort = sorted(comb0_keys, reverse = False)
+        comb0_sort = sorted(comb0_keys, reverse = True)
 
         left = []
         right = []
