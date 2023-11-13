@@ -221,7 +221,7 @@ def chart_comb(best, predicts, side = "l"):
 
         left  = [int(i) for i in left]
         right = [int(i) for i in right]
-        left  = sorted(left, reverse = False)
+        left  = sorted(left, reverse = True)
         right = sorted(right, reverse = True)
         left  = [str(i) for i in left]
         right = [str(i) for i in right]
