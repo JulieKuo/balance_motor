@@ -21,13 +21,14 @@ def get_input(argv, logging):
 
 
 
-def error(logging, message, model_id):
+def error(logging, message, model_id = ""):
     logging.error(message)
     result = {
         "status": "fail",
         "reason": message,
-        "model_id": model_id
         }
+    if model_id != "":
+        result["model_id"] = model_id
     
     return result
 

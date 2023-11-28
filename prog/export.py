@@ -33,6 +33,9 @@ class Export():
 
             query = f'SELECT * FROM {self.config["table"]} WHERE  (modify_by != "admin") AND ((create_time >= "{self.start_time}") AND (create_time <= "{self.end_time}"))'
             df = pd.read_sql(query, conn)
+
+            if df.empty:
+                raise NoDataFoundException
             
 
             logging.info('Data processing.')
@@ -98,23 +101,29 @@ class Export():
 
             result = {
                 "status": "success"
-                }
+                }        
+        
+        
+        except (pd.errors.EmptyDataError, NoDataFoundException):
+            message = "該區段查無資料"
+            result  = error(logging, message)
                 
 
         except:
-            logging.error(format_exc())
-            result = {
-                "status": "fail",
-                "reason": format_exc(),
-                }
+            message = format_exc()
+            result  = error(logging, message)
 
 
         finally:
             logging.info(f'Save output to {self.output_json}')
-            with open(self.output_json, 'w') as file:
-                json.dump(result, file, indent = 4)
+            with open(self.output_json, 'w', encoding = 'utf-8') as file:
+                json.dump(result, file, indent = 4, ensure_ascii = False)
             
             log.shutdown()
+
+
+class NoDataFoundException(Exception):
+    pass
 
 
 
